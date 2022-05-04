@@ -1,11 +1,13 @@
 import React, { useContext } from 'react';
 import { UserContext } from '../context/UserProvider';
 import { useNavigate } from 'react-router-dom';
-import formValidate from '../utils/formValidate';
+import { formValidate } from '../utils/formValidate';
 import { useForm } from 'react-hook-form';
-import erroresFirebase from '../utils/erroresFirebase';
+import { erroresFirebase } from '../utils/erroresFirebase';
 import FormInput from '../components/FormInput';
 import FormError from '../components/FormError';
+import Title from '../components/Title';
+import Buttons from '../components/Buttons';
 
 const Login = () => {
     const { loginUser } = useContext( UserContext );
@@ -16,53 +18,55 @@ const Login = () => {
         formState: { errors }, 
         setError  
     } = useForm();
-    const { validate, patternEmail, minLength, validateTrim } = formValidate();
+    const { required, patternEmail, minLength, validateTrim } = formValidate();
 
-    const onSubmit = async( data ) => {
+    const onSubmit = async( data, e ) => {
+        e.preventDefault();
         try {
             await loginUser( data.email, data.password );
-            console.log( 'Usuario creado correctamente' );
             navegate( '/' );
         } catch ( error ) {
-            console.log( error.code );
-            setError( 'firebase', {
-                message: erroresFirebase( error.code ),
+            //console.log( error.code );
+            const { code, message } = erroresFirebase( error.code );
+            setError( code, {
+                message: message,
             });  
         }
     };
 
     return (
         <>
-            <div>Login</div>
-            <FormError error={ errors.firebase } />
+            <Title text="Iniciar sesión" />
             <form onSubmit={ handleSubmit( onSubmit ) } >
                 <FormInput
                     type="email" 
-                    placeholder='Ingrese un correo electronico' 
+                    placeholder='Ingrese su correo electronico' 
                     {...register( 'email',  
                         { 
-                            required: validate,
+                            required: required,
                             pattern: patternEmail
                         } 
                     )}
+                    labelText="Usuario"
                 >
                     <FormError error={ errors.email } />
                 </FormInput>
 
                 <FormInput 
                     type="password" 
-                    placeholder='Ingrese la contraseña' 
+                    placeholder='Ingrese su contraseña' 
                     {...register( 'password', 
                         { 
-                            minLength: minLength,
+                            required: required,
                             validate: validateTrim,    
                         }
                     )}
+                    labelText="Contraseña"
                 >
                     <FormError error={ errors.password } />
                 </FormInput>
 
-                <button type='submit'> Iniciar sesión </button>
+                <Buttons typeButton="submit" text="Iniciar sesión" />
             </form>
         </>
     )

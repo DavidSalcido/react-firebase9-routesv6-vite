@@ -2,11 +2,13 @@ import { async } from '@firebase/util';
 import React, { useContext, useState } from 'react'
 import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
+import Buttons from '../components/Buttons';
 import FormError from '../components/FormError';
 import FormInput from '../components/FormInput';
+import Title from '../components/Title';
 import { UserContext } from '../context/UserProvider';
-import erroresFirebase from '../utils/erroresFirebase';
-import formValidate from '../utils/formValidate';
+import { erroresFirebase } from '../utils/erroresFirebase';
+import { formValidate } from '../utils/formValidate';
 
 export const Register = () => {
     const navegate = useNavigate();
@@ -18,48 +20,53 @@ export const Register = () => {
         getValues,
         setError  
     } = useForm();
-    const { validate, patternEmail, minLength, validateTrim, validateEquals } = formValidate();
+    const { required, patternEmail, minLength, validateTrim, validateEquals } = formValidate();
 
-    const onSubmit = async( data ) => {
+    const onSubmit = async( data, e ) => {
+        e.preventDefault();
         try {
             await registerUser( data.email, data.password );
-            console.log( 'Usuario creado correctamente' );
             navegate( '/' );
         } catch ( error ) {
-            console.log( error.code );
-            setError( 'firebase', {
-                message: erroresFirebase( error.code ),
+            //console.log( error.code );
+            const { code, message } = erroresFirebase( error.code );
+            setError( code, {
+                message: message,
             });  
         }
     };
 
     return (
         <>
-            <div>Register</div>
-            <FormError error={ errors.firebase } />
+            <Title text="Formulario de registro de usuario" />
             <form onSubmit={ handleSubmit( onSubmit ) }>
                 <FormInput
                     type="email" 
                     placeholder='Ingrese un correo electronico' 
                     {...register( 'email',  
                         { 
-                            required: validate,
+                            required: required,
                             pattern: patternEmail
                         } 
                     )}
+                    labelText="Correo electrónico"
+                    error={ errors.email }
                 >
                     <FormError error={ errors.email } />
                 </FormInput>
                 
                 <FormInput 
                     type="password" 
-                    placeholder='Ingrese la contraseña' 
+                    placeholder='Ingrese una contraseña' 
                     {...register( 'password', 
                         { 
+                            required: required,
                             minLength: minLength,
                             validate: validateTrim,    
                         }
                     )}
+                    labelText="Contraseña"
+                    error={ errors.password }
                 >
                     <FormError error={ errors.password } />
                 </FormInput>
@@ -69,15 +76,18 @@ export const Register = () => {
                     placeholder='Ingrese nuevamente la contraseña' 
                     {...register( 'repassword', 
                         { 
+                            required: required,
                             minLength: minLength,
-                            validate: validateEquals( getValues ), 
+                            validate: validateEquals( getValues( 'password' ) ), 
                         }
                     )}
+                    labelText="Repetir contraseña" 
+                    error={ errors.repassword }
                 >
                     <FormError error={ errors.repassword } />
                 </FormInput>
                 
-                <button type='submit'> Registrar </button>
+                <Buttons typeButton="submit" text="Registrar" />
             </form>
         </>
     )
