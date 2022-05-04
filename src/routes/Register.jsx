@@ -38,7 +38,7 @@ export const Register = () => {
 
     return (
         <>
-            <Title text="Formulario de registro de usuario" />
+            <Title text="Registro de usuario" />
             <form onSubmit={ handleSubmit( onSubmit ) }>
                 <FormInput
                     type="email" 
