@@ -4,17 +4,28 @@ import { UserContext } from '../context/UserProvider';
 
 const Navbar = () => {
 
-    const { user, setUser } = useContext( UserContext );
+    const { user, signOutUser } = useContext( UserContext );
+
+    const handlerClickLogout = async() => {
+        try {
+            await signOutUser()
+        } catch ( error ) {
+            console.log( error.code );
+        }
+    }
 
     return (
         <div>
             { user ? (
                     <>
                         <Link to="/"> Inicio </Link>
-                        <button onClick={ () => setUser( false ) }> Salir </button>
+                        <button onClick={ handlerClickLogout }> Cerrar Sesión </button>
                     </>
                 ) : (
-                    <NavLink to="/login"> Login </NavLink>
+                    <>
+                        <NavLink to="/login"> Login | </NavLink>
+                        <NavLink to='/register'> Registrate | </NavLink>
+                    </>
                 )
             }       
         </div>

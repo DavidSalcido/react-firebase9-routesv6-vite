@@ -1,26 +1,28 @@
-import React, { useContext } from 'react';
-import { UserContext } from '../context/UserProvider';
-import { useNavigate } from 'react-router-dom';
-import formValidate from '../utils/formValidate';
+import { async } from '@firebase/util';
+import React, { useContext, useState } from 'react'
 import { useForm } from 'react-hook-form';
-import erroresFirebase from '../utils/erroresFirebase';
-import FormInput from '../components/FormInput';
+import { useNavigate } from 'react-router-dom';
 import FormError from '../components/FormError';
+import FormInput from '../components/FormInput';
+import { UserContext } from '../context/UserProvider';
+import erroresFirebase from '../utils/erroresFirebase';
+import formValidate from '../utils/formValidate';
 
-const Login = () => {
-    const { loginUser } = useContext( UserContext );
+export const Register = () => {
     const navegate = useNavigate();
+    const { registerUser } = useContext( UserContext );
     const  { 
         register, 
         handleSubmit, 
         formState: { errors }, 
+        getValues,
         setError  
     } = useForm();
-    const { validate, patternEmail, minLength, validateTrim } = formValidate();
+    const { validate, patternEmail, minLength, validateTrim, validateEquals } = formValidate();
 
     const onSubmit = async( data ) => {
         try {
-            await loginUser( data.email, data.password );
+            await registerUser( data.email, data.password );
             console.log( 'Usuario creado correctamente' );
             navegate( '/' );
         } catch ( error ) {
@@ -33,9 +35,9 @@ const Login = () => {
 
     return (
         <>
-            <div>Login</div>
+            <div>Register</div>
             <FormError error={ errors.firebase } />
-            <form onSubmit={ handleSubmit( onSubmit ) } >
+            <form onSubmit={ handleSubmit( onSubmit ) }>
                 <FormInput
                     type="email" 
                     placeholder='Ingrese un correo electronico' 
@@ -48,7 +50,7 @@ const Login = () => {
                 >
                     <FormError error={ errors.email } />
                 </FormInput>
-
+                
                 <FormInput 
                     type="password" 
                     placeholder='Ingrese la contraseña' 
@@ -61,11 +63,24 @@ const Login = () => {
                 >
                     <FormError error={ errors.password } />
                 </FormInput>
-
-                <button type='submit'> Iniciar sesión </button>
+                
+                <FormInput
+                    type="password" 
+                    placeholder='Ingrese nuevamente la contraseña' 
+                    {...register( 'repassword', 
+                        { 
+                            minLength: minLength,
+                            validate: validateEquals( getValues ), 
+                        }
+                    )}
+                >
+                    <FormError error={ errors.repassword } />
+                </FormInput>
+                
+                <button type='submit'> Registrar </button>
             </form>
         </>
     )
-};
+}
 
-export default Login;
+export default Register;
