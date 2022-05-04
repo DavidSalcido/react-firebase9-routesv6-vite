@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import { UserContext } from '../context/UserProvider';
 import { useNavigate } from 'react-router-dom';
 import { formValidate } from '../utils/formValidate';
@@ -8,8 +8,10 @@ import FormInput from '../components/FormInput';
 import FormError from '../components/FormError';
 import Title from '../components/Title';
 import Buttons from '../components/Buttons';
+import ButtonLoading from '../components/ButtonLoading';
 
 const Login = () => {
+    const [ loading, setLoading ] = useState( false );
     const { loginUser } = useContext( UserContext );
     const navegate = useNavigate();
     const  { 
@@ -23,6 +25,7 @@ const Login = () => {
     const onSubmit = async( data, e ) => {
         e.preventDefault();
         try {
+            setLoading( true );
             await loginUser( data.email, data.password );
             navegate( '/' );
         } catch ( error ) {
@@ -31,6 +34,8 @@ const Login = () => {
             setError( code, {
                 message: message,
             });  
+        } finally {
+            setLoading( false );
         }
     };
 
@@ -65,8 +70,13 @@ const Login = () => {
                 >
                     <FormError error={ errors.password } />
                 </FormInput>
-
-                <Buttons typeButton="submit" text="Iniciar sesión" />
+                
+                {
+                    loading 
+                        ? <ButtonLoading text="Cargando..." />
+                        : <Buttons typeButton="submit" text="Iniciar sesión" />
+                }
+                
             </form>
         </>
     )
