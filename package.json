@@ -10,6 +10,7 @@
   "dependencies": {
     "firebase": "^9.6.11",
     "flowbite": "^1.4.5",
+    "nanoid": "^3.3.4",
     "react": "^18.0.0",
     "react-dom": "^18.0.0",
     "react-hook-form": "^7.30.0",

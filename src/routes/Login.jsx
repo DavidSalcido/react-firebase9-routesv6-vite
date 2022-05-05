@@ -71,12 +71,7 @@ const Login = () => {
                     <FormError error={ errors.password } />
                 </FormInput>
                 
-                {
-                    loading 
-                        ? <ButtonLoading text="Cargando..." />
-                        : <Buttons typeButton="submit" text="Iniciar sesión" />
-                }
-                
+                <Buttons typeButton="submit" text="Iniciar sesión" color='blue' loading={loading} />
             </form>
         </>
     )

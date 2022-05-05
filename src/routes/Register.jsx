@@ -91,12 +91,7 @@ export const Register = () => {
                 >
                     <FormError error={ errors.repassword } />
                 </FormInput>
-                
-                {
-                    loading 
-                        ? <ButtonLoading text="Creando..." />
-                        : <Buttons typeButton="submit" text="Registrar" />
-                }
+                <Buttons typeButton="submit" text="Registrar" loading={loading}/>
             </form>
         </>
     )
