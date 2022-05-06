@@ -19,7 +19,12 @@ export const erroresFirebase = ( error ) => {
             return {
                 code: 'password',
                 message: "Contraseña incorrecta",
-            };            
+            };
+        case "fieldUrlEmpty":
+            return {
+                code: 'url',
+                message: "Url vacio",
+            }                
         default:
             return {
                 code: 'email',

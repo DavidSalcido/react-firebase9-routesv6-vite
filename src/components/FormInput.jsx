@@ -11,7 +11,7 @@ const FormInput = forwardRef(
             <div className="mb-6">
                 
                 <label
-                    htmlFor="email"
+                    htmlFor={ name }
                     className="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-300"
                 >
                 { labelText }  
