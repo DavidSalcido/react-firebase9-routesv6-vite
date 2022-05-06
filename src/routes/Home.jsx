@@ -21,7 +21,7 @@ const Home = () => {
   } = useForm();
   const { data, error, loading, getData, addData, deleteData, updateData } = useFirestore();
   const [ newOriginID, setNewOriginID ] = useState();
-  const pathUrl = window.location.href;
+  const pathUrl = location.href;
 
   useEffect( () => {
     getData();
